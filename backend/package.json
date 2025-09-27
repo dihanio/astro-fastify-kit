@@ -1,0 +1,43 @@
+{
+  "name": "astro-fastify-backend",
+  "version": "1.0.0",
+  "description": "Fastify backend for Astro-Fastify starter kit",
+  "main": "dist/server.js",
+  "type": "module",
+  "scripts": {
+    "build": "bun run clean && bun run compile",
+    "compile": "tsc",
+    "dev": "bun --watch src/server.ts",
+    "start": "bun dist/server.js",
+    "clean": "rimraf dist",
+    "test": "echo \"No tests yet\" && exit 0",
+    "type-check": "tsc --noEmit",
+    "dev:debug": "bun --inspect --watch src/server.ts",
+    "lint": "echo \"No linting configured\" && exit 0",
+    "install:deps": "bun install"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "dotenv": "^16.4.5",
+    "fastify": "^5.6.0",
+    "mongodb": "^6.8.0"
+  },
+  "devDependencies": {
+    "@eslint/css": "^0.11.1",
+    "@eslint/js": "^9.36.0",
+    "@eslint/json": "^0.13.2",
+    "@eslint/markdown": "^7.3.0",
+    "@types/mongodb": "^4.0.7",
+    "@types/node": "^20.14.0",
+    "eslint": "^9.36.0",
+    "globals": "^16.4.0",
+    "pino-pretty": "^11.2.0",
+    "rimraf": "^5.0.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0",
+    "typescript-eslint": "^8.44.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
