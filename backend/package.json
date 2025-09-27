@@ -18,9 +18,9 @@
   },
   "dependencies": {
     "@fastify/cors": "^11.1.0",
-    "dotenv": "^16.4.5",
-    "fastify": "^5.6.0",
-    "mongodb": "^6.8.0"
+    "dotenv": "^17.2.2",
+    "fastify": "^5.6.1",
+    "mongodb": "^6.20.0"
   },
   "devDependencies": {
     "@eslint/css": "^0.11.1",
@@ -28,13 +28,13 @@
     "@eslint/json": "^0.13.2",
     "@eslint/markdown": "^7.3.0",
     "@types/mongodb": "^4.0.7",
-    "@types/node": "^20.14.0",
+    "@types/node": "^24.5.2",
     "eslint": "^9.36.0",
     "globals": "^16.4.0",
-    "pino-pretty": "^11.2.0",
-    "rimraf": "^5.0.0",
-    "tsx": "^4.7.0",
-    "typescript": "^5.4.0",
+    "pino-pretty": "^13.1.1",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.2",
     "typescript-eslint": "^8.44.1"
   },
   "engines": {

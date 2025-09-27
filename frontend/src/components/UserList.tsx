@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 
 interface User {
   id: string;
-  nama: string;
+  name: string;
   email: string;
-  dibuat: string;
+  createdAt: string;
 }
 
 export default function UserList() {
@@ -23,11 +23,21 @@ export default function UserList() {
         }
         
         const data = await response.json();
-        setUsers(data);
+        
+        // Handle the backend response structure: { users: [], total: number }
+        if (data && Array.isArray(data.users)) {
+          setUsers(data.users);
+        } else if (Array.isArray(data)) {
+          setUsers(data);
+        } else {
+          setUsers([]);
+        }
+        
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch users');
+        setError(err instanceof Error ? err.message : 'Gagal mengambil data pengguna');
         console.error('Error fetching users:', err);
+        setUsers([]); // Ensure users is always an array even on error
       } finally {
         setLoading(false);
       }
@@ -40,7 +50,7 @@ export default function UserList() {
     return (
       <div className="user-list loading">
         <div className="spinner"></div>
-        <p>Loading users...</p>
+        <p>Memuat pengguna...</p>
       </div>
     );
   }
@@ -48,7 +58,7 @@ export default function UserList() {
   if (error) {
     return (
       <div className="user-list error">
-        <h3>⚠️ Error Loading Users</h3>
+        <h3>⚠️ Kesalahan Memuat Pengguna</h3>
         <p>{error}</p>
       </div>
     );
@@ -56,17 +66,17 @@ export default function UserList() {
 
   return (
     <div className="user-list">
-      <h3>👥 Users</h3>
+      <h3>👥 Pengguna</h3>
       
-      {users.length === 0 ? (
-        <p>No users found. Add some users to see them here!</p>
+      {!Array.isArray(users) || users.length === 0 ? (
+        <p>Tidak ada pengguna ditemukan. Tambahkan beberapa pengguna untuk melihatnya di sini!</p>
       ) : (
         <div className="users-grid">
           {users.map((user) => (
             <div key={user.id} className="user-card">
-              <h4>{user.nama}</h4>
+              <h4>{user.name}</h4>
               <p><strong>Email:</strong> {user.email}</p>
-              <p><strong>Created:</strong> {new Date(user.dibuat).toLocaleDateString()}</p>
+              <p><strong>Dibuat:</strong> {new Date(user.createdAt).toLocaleDateString()}</p>
             </div>
           ))}
         </div>

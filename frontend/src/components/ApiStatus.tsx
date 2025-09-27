@@ -30,24 +30,45 @@ export default function ApiStatus() {
         
         // Fetch health status
         const healthResponse = await fetch('/health');
+        if (!healthResponse.ok) {
+          throw new Error(`Pemeriksaan kesehatan gagal: ${healthResponse.status}`);
+        }
+        
+        const contentType = healthResponse.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('Endpoint kesehatan mengembalikan respons non-JSON');
+        }
+        
         const healthData = await healthResponse.json();
         setHealth(healthData);
 
-        // Fetch API info
-        const apiResponse = await fetch('/api');
+        // Fetch API info using the hello endpoint (which is proxied)
+        const apiResponse = await fetch('/api/hello');
         if (!apiResponse.ok) {
-          // If /api doesn't exist, try root endpoint
-          const rootResponse = await fetch('/');
-          const rootData = await rootResponse.json();
-          setApiInfo(rootData);
-        } else {
-          const apiData = await apiResponse.json();
-          setApiInfo(apiData);
+          throw new Error(`API hello gagal: ${apiResponse.status}`);
         }
+        
+        const apiContentType = apiResponse.headers.get('content-type');
+        if (!apiContentType || !apiContentType.includes('application/json')) {
+          throw new Error('Endpoint API hello mengembalikan respons non-JSON');
+        }
+        
+        const apiData = await apiResponse.json();
+        // Create mock API info based on what we know about the backend
+        setApiInfo({
+          pesan: apiData.pesan || 'Astro-Fastify Starter Kit',
+          versi: '1.0.0',
+          endpoints: {
+            kesehatan: '/health',
+            ping: '/ping',
+            api: '/api/hello',
+            pengguna: '/api/users'
+          }
+        });
         
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch data');
+        setError(err instanceof Error ? err.message : 'Gagal mengambil data');
         console.error('Error fetching API data:', err);
       } finally {
         setLoading(false);
@@ -61,7 +82,7 @@ export default function ApiStatus() {
     return (
       <div className="api-status loading">
         <div className="spinner"></div>
-        <p>Loading API status...</p>
+        <p>Memuat status API...</p>
       </div>
     );
   }
@@ -69,34 +90,34 @@ export default function ApiStatus() {
   if (error) {
     return (
       <div className="api-status error">
-        <h3>⚠️ API Connection Error</h3>
+        <h3>⚠️ Kesalahan Koneksi API</h3>
         <p>{error}</p>
-        <p>Make sure the backend server is running on port 3001</p>
+        <p>Pastikan server backend berjalan di port 3001</p>
       </div>
     );
   }
 
   return (
     <div className="api-status success">
-      <h3>🚀 API Status</h3>
+      <h3>🚀 Status API</h3>
       
       {health && (
         <div className="health-info">
-          <h4>Health Check</h4>
+          <h4>Pemeriksaan Kesehatan</h4>
           <p><strong>Status:</strong> {health.status}</p>
-          <p><strong>Time:</strong> {new Date(health.waktu).toLocaleString()}</p>
-          <p><strong>Uptime:</strong> {Math.floor(health.uptime / 60)} minutes</p>
+          <p><strong>Waktu:</strong> {new Date(health.waktu).toLocaleString()}</p>
+          <p><strong>Uptime:</strong> {Math.floor(health.uptime / 60)} menit</p>
         </div>
       )}
 
       {apiInfo && (
         <div className="api-info">
-          <h4>API Information</h4>
-          <p><strong>Message:</strong> {apiInfo.pesan}</p>
-          <p><strong>Version:</strong> {apiInfo.versi}</p>
+          <h4>Informasi API</h4>
+          <p><strong>Pesan:</strong> {apiInfo.pesan}</p>
+          <p><strong>Versi:</strong> {apiInfo.versi}</p>
           
           <div className="endpoints">
-            <h5>Available Endpoints:</h5>
+            <h5>Endpoint Tersedia:</h5>
             <ul>
               {Object.entries(apiInfo.endpoints).map(([key, value]) => (
                 <li key={key}>
